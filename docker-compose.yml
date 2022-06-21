@@ -1,0 +1,16 @@
+version: '3'
+
+networks:
+  backend:
+    external: true
+
+services:
+  csctracker:
+    container_name: metrics-service
+    hostname: metrics-service
+    image: krlsedu/csctracker-metrics-service
+    restart: always
+    networks:
+      - backend
+    ports:
+      - "5050:5000"
