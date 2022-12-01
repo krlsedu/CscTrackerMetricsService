@@ -18,7 +18,6 @@ def get_metrics():
 @app.route('/metric', methods=['POST'])
 def post_metrics():
     json = request.get_json()
-    print(json)
     service_metrics.add_metric(json)
     return 'Hello World!'
 
