@@ -48,7 +48,6 @@ pipeline {
             agent any
             when {
                 expression { env.RELEASE_COMMIT != '0' }
-                branch 'master'
             }
             steps {
                 withCredentials([usernamePassword(credentialsId: 'dockerHub', passwordVariable: 'dockerHubPassword', usernameVariable: 'dockerHubUser')]) {
@@ -63,6 +62,7 @@ pipeline {
             agent any
             when {
                 expression { env.RELEASE_COMMIT != '0' }
+                branch 'master'
             }
             steps {
                 sh 'docker service update --image krlsedu/csctracker-metrics-service:' + env.VERSION_NAME + ' csctracker_services_metrics'
