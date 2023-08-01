@@ -58,7 +58,7 @@ pipeline {
             }
         }
 
-        stage('Service update') {
+        stage('Service update - Local') {
             agent any
             when {
                 expression { env.RELEASE_COMMIT != '0' }
@@ -68,7 +68,16 @@ pipeline {
                 echo 'Update service on local docker swarm - started'
                 sh 'docker service update --image krlsedu/csctracker-metrics-service:' + env.VERSION_NAME + ' csctracker_services_metrics'
                 echo 'Update service on local docker swarm - finished'
+            }
+        }
 
+        stage('Service update - Remote') {
+            agent any
+            when {
+                expression { env.RELEASE_COMMIT != '0' }
+                branch 'master'
+            }
+            steps {
                 withCredentials([usernamePassword(credentialsId: 'one_click_host', passwordVariable: 'password', usernameVariable: 'user')]) {
                     script {
                         echo "Update service on remote docker swarm - started"
