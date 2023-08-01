@@ -65,7 +65,24 @@ pipeline {
                 branch 'master'
             }
             steps {
+                echo 'Update service on local docker swarm - started'
                 sh 'docker service update --image krlsedu/csctracker-metrics-service:' + env.VERSION_NAME + ' csctracker_services_metrics'
+                echo 'Update service on local docker swarm - finished'
+
+                withCredentials([usernamePassword(credentialsId: 'one_click_host', passwordVariable: 'password', usernameVariable: 'user')]) {
+                    script {
+                        echo "Update service on remote docker swarm - started"
+                        def remote = [:]
+                        remote.name = 'OneClickHost'
+                        remote.host = env.ONE_CLICK_HOST_IP
+                        remote.user = env.user
+                        remote.port = 22
+                        remote.password = env.password
+                        remote.allowAnyHosts = true
+                        sshCommand remote: remote, command: "docker service update --image krlsedu/csctracker-metrics-service:" + env.VERSION_NAME + " csctracker_services_metrics"
+                        echo "Update service on remote docker swarm - finished"
+                    }
+                }
             }
         }
     }
