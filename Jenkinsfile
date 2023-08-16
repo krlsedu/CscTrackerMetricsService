@@ -1,7 +1,7 @@
 #!groovy
 env.RELEASE_COMMIT = "1";
 env.VERSION_NAME = "";
-env.SERVICE_NAME = "csctracker_services_metric"
+env.SERVICE_NAME = "csctracker_services_metrics"
 env.IMAGE_NAME = "csctracker-metrics-service"
 env.REPOSITORY_NAME = "CscTrackerMetricsService"
 
