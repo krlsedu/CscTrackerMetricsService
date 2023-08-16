@@ -109,7 +109,7 @@ pipeline {
             }
         }
 
-        stage('Service update') {
+        stage('Service update - Local') {
             agent any
             when {
                 expression { env.RELEASE_COMMIT != '0' }
@@ -159,32 +159,6 @@ pipeline {
             }
         }
 
-        stage('Service update - Local') {
-            agent any
-            when {
-                expression { env.RELEASE_COMMIT != '0' }
-                branch 'master'
-            }
-            steps {
-                script {
-                    echo 'Update service on local docker swarm - started'
-                    sh 'docker service update --image krlsedu/' + env.IMAGE_NAME + ':' + env.VERSION_NAME + ' ' + env.SERVICE_NAME
-                    echo 'Update service on local docker swarm - finished'
-                    withCredentials([string(credentialsId: 'csctracker_token', variable: 'token_csctracker')]) {
-                        httpRequest acceptType: 'APPLICATION_JSON',
-                                contentType: 'APPLICATION_JSON',
-                                httpMode: 'POST', quiet: true,
-                                requestBody: '''{
-                                                       "app" : "Jenkins",
-                                                       "text" : "The local service ''' + env.SERVICE_NAME + ''' has been successfully updated to version: ''' + env.VERSION_NAME + '''"
-                                                    }''',
-                                customHeaders: [[name: 'authorization', value: 'Bearer ' + env.token_csctracker]],
-                                url: 'https://gtw.csctracker.com/notify-sync/message'
-                    }
-                }
-            }
-        }
-
         stage('Service update - Remote') {
             agent any
             when {
@@ -202,7 +176,7 @@ pipeline {
                         remote.port = 22
                         remote.password = env.password
                         remote.allowAnyHosts = true
-                        sshCommand remote: remote, command: "docker service update --image krlsedu/" + env.IMAGE_NAME + ":" + env.VERSION_NAME + " " + env.SERVICE_NAME
+                        sshCommand remote: remote, command: "docker service update --image krlsedu/" + env.IMAGE_NAME + ":" + env.VERSION_NAME + " csctracker_services_metric"
                         echo "Update service on remote docker swarm - finished"
                     }
                     script {
