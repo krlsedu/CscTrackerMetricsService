@@ -1,12 +1,12 @@
-from flask import Flask, request
-from prometheus_flask_exporter import PrometheusMetrics
+from csctracker_py_core.starter import Starter
 
 from Metrics import Metrics
 
-app = Flask(__name__)
+starter = Starter()
+app = starter.get_app()
+http_repository = starter.get_http_repository()
 
 service_metrics = Metrics()
-metrics = PrometheusMetrics(app, group_by='endpoint')
 
 
 @app.route('/services-metrics', methods=['GET'])
@@ -17,10 +17,9 @@ def get_metrics():
 
 @app.route('/metric', methods=['POST'])
 def post_metrics():
-    json = request.get_json()
+    json = http_repository.get_json_body()
     service_metrics.add_metric(json)
     return 'Hello World!'
 
 
-if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000)
+starter.start()
