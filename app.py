@@ -19,7 +19,7 @@ def get_metrics():
 def post_metrics():
     json = http_repository.get_json_body()
     service_metrics.add_metric(json)
-    return 'Hello World!'
+    return 'ok', 201, {'Content-Type': 'text/plain'}
 
 
 starter.start()
