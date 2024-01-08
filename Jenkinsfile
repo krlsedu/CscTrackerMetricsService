@@ -127,7 +127,7 @@ pipeline {
                         remote.port = 22
                         remote.password = env.password
                         remote.allowAnyHosts = true
-                        sshCommand remote: remote, command: "docker service update --image krlsedu/" + env.IMAGE_NAME + ":" + env.VERSION_NAME + " csctracker_services_metric"
+                        sshCommand remote: remote, command: "docker service update --image krlsedu/" + env.IMAGE_NAME + ":" + env.VERSION_NAME + " " + env.SERVICE_NAME
                         echo "Update service on remote docker swarm - finished"
                     }
                     script {
